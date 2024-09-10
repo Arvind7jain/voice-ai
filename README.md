@@ -1,85 +1,153 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# Voice AI Pipeline with NestJS
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+A comprehensive solution for processing audio inputs using NestJS, converting speech to text (STT) with Whisper, processing the text using a language model (LLM) with OpenAI, and converting the response back to speech (TTS) using `gTTS` (Google Text-to-Speech) library.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## Table of Contents
 
-## Description
+1. [Project Structure](#project-structure)
+2. [Key Components](#key-components)
+3. [Setup Instructions](#setup-instructions)
+4. [Running the Project](#running-the-project)
+5. [Configuration and Permissions](#configuration-and-permissions)
+6. [Assumptions](#assumptions)
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+## Project Structure
 
-## Project setup
-
-```bash
-$ npm install
+```
+voice-ai/
+├── dist/                    # Compiled output
+├── node_modules/            # Node.js modules
+├── scripts/                 # Whisper transcribe script
+│   ├── whisper_transcribe.ts
+├── src/                     # Source code
+│   ├── audio/               # Audio-related files
+│   │   ├── audio.controller.ts
+│   │   ├── audio.module.ts
+│   ├── stt/                 # Speech-to-Text service
+│   │   ├── stt.service.ts
+│   │   ├── stt.module.ts
+│   ├── llm/                 # Language Model service
+│   │   ├── llm.service.ts
+│   │   ├── llm.module.ts
+│   ├── tts/                 # Text-to-Speech service
+│   │   ├── tts.service.ts
+│   │   ├── tts.module.ts
+│   ├── app.module.ts        # Root module
+│   ├── main.ts              # Entry point
+├── frontend/                # Frontend files
+│   ├── audio-record.html
+│   ├── audio-record.js
+├── uploads/                 # Directory for uploaded audio files
+├── .env                     # Environment configuration
+├── package.json             # NPM dependencies and scripts
+├── README.md                # Documentation
+└── tsconfig.json            # TypeScript configuration
 ```
 
-## Compile and run the project
+## Key Components
 
-```bash
-# development
-$ npm run start
+- **`audio/`:** Handles audio upload and processing.
+  - `audio.controller.ts`: Manages incoming audio files and coordinates the STT, LLM, and TTS services.
+  - `audio.module.ts`: Sets up the audio controller and dependencies.
+  
+- **`stt/`:** Manages Speech-to-Text conversion.
+  - `stt.service.ts`: Uses the Whisper library for converting speech to text.
+  - `stt.module.ts`: Sets up the STT service.
+  
+- **`llm/`:** Manages Language Model processing.
+  - `llm.service.ts`: Uses the OpenAI API to generate responses based on text input.
+  - `llm.module.ts`: Sets up the LLM service.
+  
+- **`tts/`:** Manages Text-to-Speech conversion.
+  - `tts.service.ts`: Uses gTTS (Google Text-to-Speech) to convert text to speech.
+  - `tts.module.ts`: Sets up the TTS service.
+  
+- **`frontend/`:** Contains the HTML and JavaScript for recording and uploading audio.
 
-# watch mode
-$ npm run start:dev
+## Setup Instructions
 
-# production mode
-$ npm run start:prod
+### Prerequisites
+
+- **Node.js** (version 14 or above)
+- **npm**
+- **ffmpeg**
+- **Python** and **pip**
+- **Whisper Model**
+
+### Installation
+
+1. **Clone the Repository:**
+   ```bash
+   git clone https://github.com/Arvind7jain/voice-ai.git
+   cd voice-ai
+   ```
+
+2. **Install Node.js Dependencies:**
+   ```bash
+   npm install
+   ```
+
+3. **Install Python Dependencies:**
+   ```bash
+   pip3 install gtts
+   ```
+
+4. **Download and Set Up Whisper Model:**
+   ```bash
+   pip3 install openai-whisper
+   ```
+
+5. **Create an `.env` File for Environment Variables:**
+   ```bash
+   echo "OPENAI_API_KEY=your-openai-api-key" > .env
+   echo "PYTHON_PATH=local-venv-path-for-repo" > .env
+   ```
+
+## Running the Project
+
+1. **Ensure the `uploads` Directory Exists:**
+   ```bash
+   mkdir uploads
+   ```
+
+2. **Start the NestJS Server:**
+   ```bash
+   npm run start
+   ```
+
+3. **Open the Frontend in Your Browser:**
+   Open `frontend/audio-record.html` in your web browser.
+
+## Configuration and Permissions
+
+### Environment Variables
+
+Create a `.env` file in the root of your project to store sensitive data like API keys:
+
+```
+PYTHON_PATH=local-venv-path-for-repo
+OPENAI_API_KEY=your-openai-api-key
 ```
 
-## Run tests
+### Permissions
 
-```bash
-# unit tests
-$ npm run test
+- Ensure you have permission to access the microphone in your web browser.
+- Depending on your OS, ensure `ffmpeg` is correctly installed and accessible in your `PATH`.
 
-# e2e tests
-$ npm run test:e2e
+## Assumptions
 
-# test coverage
-$ npm run test:cov
-```
+- **Local Development**: Assumes a local development environment where dependencies like Node.js, Python, and ffmpeg are installed.
+- **Whisper Model**: Assumes you have downloaded and set up the Whisper model.
+- **OpenAI API Key**: Assumes you have a valid OpenAI API key.
+- **Uploads Directory**: Assumes an `uploads` directory exists for storing audio files.
 
-## Resources
+## Known Issues and Debugging
 
-Check out a few resources that may come in handy when working with NestJS:
+### Common Errors
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+- **File Path Undefined**: Ensure the file upload interceptor is correctly configured.
 
-## Support
+### Debugging
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+- **Check Console Logs**: Both server and client-side logs for error messages.
+- **Verify Environment Variables**: Ensure environment variables are correctly set.
