@@ -87,16 +87,21 @@ voice-ai/
    ```
 
 3. **Install Python Dependencies:**
+   Before installing python dependencies make sure you setup python venv and activate it
+   ```bash
+   python3 -m venv venv
+   source venv/bin/activate
+   ```
    ```bash
    pip3 install gtts
    ```
 
-4. **Download and Set Up Whisper Model:**
+5. **Download and Set Up Whisper Model:**
    ```bash
    pip3 install openai-whisper
    ```
 
-5. **Create an `.env` File for Environment Variables:**
+6. **Create an `.env` File for Environment Variables:**
    ```bash
    echo "OPENAI_API_KEY=your-openai-api-key" > .env
    echo "PYTHON_PATH=local-venv-path-for-repo" > .env
