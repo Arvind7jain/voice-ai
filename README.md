@@ -18,7 +18,7 @@ voice-ai/
 ├── dist/                    # Compiled output
 ├── node_modules/            # Node.js modules
 ├── scripts/                 # Whisper transcribe script
-│   ├── whisper_transcribe.ts
+│   ├── whisper_transcribe.py
 ├── src/                     # Source code
 │   ├── audio/               # Audio-related files
 │   │   ├── audio.controller.ts
