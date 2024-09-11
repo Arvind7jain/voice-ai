@@ -36,7 +36,6 @@ voice-ai/
 │   ├── main.ts              # Entry point
 ├── frontend/                # Frontend files
 │   ├── audio-record.html
-│   ├── audio-record.js
 ├── uploads/                 # Directory for uploaded audio files
 ├── .env                     # Environment configuration
 ├── package.json             # NPM dependencies and scripts
